@@ -11,8 +11,8 @@ SELECT * FROM Application.People
 GO
 
 -- Create two VIEWS to explore supplier details in different ways
--- CREATE VIEW Purchasing.SupplierDetailColumns
--- AS
+CREATE VIEW Purchasing.SupplierDetailColumns
+AS
 SELECT
     Suppliers.SupplierName,
     SupplierCategories.SupplierCategoryName,
@@ -32,8 +32,8 @@ FROM Purchasing.Suppliers
 ;
 GO
 
--- CREATE VIEW Purchasing.SupplierDetailRows
--- AS
+CREATE VIEW Purchasing.SupplierDetailRows
+AS
 SELECT
     Suppliers.SupplierName,
     SupplierCategories.SupplierCategoryName,
