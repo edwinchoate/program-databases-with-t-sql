@@ -54,5 +54,26 @@ UNION
 SELECT * FROM Employees;
 ```
 
+See all the Views in a database: 
+
+```SQL
+SELECT * FROM sys.objects
+WHERE type_desc = 'VIEW';
+```
+
+See all the schemas in a database: 
+
+```SQL
+SELECT * FROM sys.schemas;
+```
+
+`sp_helptext` is a built-in stored procedure that lets you display all of the contents of a multi-line database object
+
+```SQL
+EXEC sp_helptext 'SomeSchema.SomeView';
+```
+
+The above query will print out the SQL contents of the View (the SQL), line by line. This allows you to not have all of the content of the query crammed into a single cell in the output. 
+
 ---
 End of document
