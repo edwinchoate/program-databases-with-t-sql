@@ -85,7 +85,7 @@ EXEC sp_rename 'SomeSchema.SomeTable.SomeColumn', 'NewColumnName', 'COLUMN';
 
 * When you rename database objects you will often get a warning like `Caution: Changing any part of an object name could break scripts and stored procedures.` 
 * It can also break Views that reference the old name. 
-* When you get an error like "Could not use view or function `WideWorldImporters.Sales.OutstandingBalance' because of binding errors.` that happen because there's been a rename that has broken the view or function.
+* When you get an error like `Could not use view or function 'WideWorldImporters.Sales.OutstandingBalance' because of binding errors.` that happens because there's been a rename that has broken the view or function.
 
 _Schema binding_ - you can lock down object changes until the dependant objects are either altered or dropped first. In other words, a forcing function that forces users to notice when there's a dependency. Ex: A View with `SCHEMABINDING` turned on will force you to drop or alter the View before editing the Table upon which the View depends. 
 
@@ -131,6 +131,31 @@ Drop a View:
 
 ```SQL
 DROP VIEW SomeSchema.SomeView;
+```
+
+_Normalized_ - information is split across multiple tables with keys that connect the tables together. In other words, using ID columns to associate all the information properly, across the tables.
+
+_Deterministic_ - something is deterministic if it always has the same outputs given the same set of inputs.
+
+_Non-deterministic_ - different outputs occur, even when inputs are held constant. (ex: random function)
+
+**Indexed Views**
+
+* a.k.a. _"Materialized View"_
+* You'd index a View for the same reason you'd index a table - the performance of complex queries could become expensive if not indexed.
+* Must be deterministic to be an indexed View.
+* Limitations
+    * Can't use aggregate functions
+    * Can't use outer joins
+    * Can't use columns with float/real type
+    * and more 
+
+Add an index to a View:
+
+```SQL
+CREATE UNIQUE CLUSTERED INDEX IX_SomeView
+ON SomeSchema.SomeView 
+s(SomeID, SomeColumn, SomeColumn);
 ```
 
 ---
