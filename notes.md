@@ -83,9 +83,9 @@ Example of using `sp_rename` to rename a column:
 EXEC sp_rename 'SomeSchema.SomeTable.SomeColumn', 'NewColumnName', 'COLUMN';
 ```
 
-* When you rename database objects you will often get a warning like "Caution: Changing any part of an object name could break scripts and stored procedures." 
+* When you rename database objects you will often get a warning like `Caution: Changing any part of an object name could break scripts and stored procedures.` 
 * It can also break Views that reference the old name. 
-* When you get an error like "Could not use view or function 'WideWorldImporters.Sales.OutstandingBalance' because of binding errors." that happen because there's been a rename that has broken the view or function.
+* When you get an error like "Could not use view or function `WideWorldImporters.Sales.OutstandingBalance' because of binding errors.` that happen because there's been a rename that has broken the view or function.
 
 _Schema binding_ - you can lock down object changes until the dependant objects are either altered or dropped first. In other words, a forcing function that forces users to notice when there's a dependency. Ex: A View with `SCHEMABINDING` turned on will force you to drop or alter the View before editing the Table upon which the View depends. 
 
