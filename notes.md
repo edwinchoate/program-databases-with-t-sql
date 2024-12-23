@@ -24,11 +24,6 @@ JOIN Application.People AS Contacts
 ...
 ```
 
-In order to run `CREATE VIEW` queries, your user needs the following permissions:
-
-1. Creating views 
-2. Altering the schema
-
 Creating a view:
 
 ```SQL
@@ -54,6 +49,8 @@ UNION
 SELECT * FROM Employees;
 ```
 
+To use `UNION`, the columns of both queries need to match in terms of data type, number of columns, and sequence.
+
 See all the Views in a database: 
 
 ```SQL
@@ -73,9 +70,9 @@ SELECT * FROM sys.schemas;
 EXEC sp_helptext 'SomeSchema.SomeView';
 ```
 
-The above query will print out the SQL contents of the View (the SQL), line by line. This allows you to not have all of the content of the query crammed into a single cell in the output. 
+The above query will print out the contents of the View (the actual SQL), line by line. This allows you to not have all of the content of the query crammed into a single cell in the output. 
 
-[`sp_rename`](https://learn.microsoft.com/en-us/sql/relational-databases/system-stored-procedures/sp-rename-transact-sql?view=sql-server-ver16) is a built-in stored procedure that allows you to rename tables, indexes, columns, etc.
+`sp_rename` is a built-in stored procedure that allows you to rename tables, indexes, columns, etc.
 
 Example of using `sp_rename` to rename a column:
 
@@ -84,10 +81,10 @@ EXEC sp_rename 'SomeSchema.SomeTable.SomeColumn', 'NewColumnName', 'COLUMN';
 ```
 
 * When you rename database objects you will often get a warning like `Caution: Changing any part of an object name could break scripts and stored procedures.` 
-* It can also break Views that reference the old name. 
+* Renaming objects can also break Views that reference the old name. 
 * When you get an error like `Could not use view or function 'WideWorldImporters.Sales.OutstandingBalance' because of binding errors.` that happens because there's been a rename that has broken the view or function.
 
-_Schema binding_ - you can lock down object changes until the dependant objects are either altered or dropped first. In other words, a forcing function that forces users to notice when there's a dependency. Ex: A View with `SCHEMABINDING` turned on will force you to drop or alter the View before editing the Table upon which the View depends. 
+_Schema binding_ - you can lock down object changes until the dependant objects are either altered or dropped first. In other words, schema binding is a forcing function that forces users to notice when there's a dependency. Ex: A View with `SCHEMABINDING` turned on will force you to drop or alter the View before editing the Table upon which the View depends. 
 
 How to apply schema binding to a brand new View:
 
@@ -113,7 +110,7 @@ If you try to change an object that is schema-bound, you'll get an error like...
 Object 'Sales.CustomerTransactions.PreTaxTotal' cannot be renamed because the object participates in enforced dependencies.
 ```
 
-Use this query to find which objects are dependent:
+Use this query to find which objects are using schema binding:
 
 ```SQL
 SELECT 
@@ -133,9 +130,9 @@ Drop a View:
 DROP VIEW SomeSchema.SomeView;
 ```
 
-_Normalized_ - information is split across multiple tables with keys that connect the tables together. In other words, using ID columns to associate all the information properly, across the tables.
+_Normalized_ - information is split across multiple tables with keys that connect the tables together
 
-_Deterministic_ - something is deterministic if it always has the same outputs given the same set of inputs.
+_Deterministic_ - something is deterministic if it always has the same outputs given the same set of inputs
 
 _Non-deterministic_ - different outputs occur, even when inputs are held constant. (ex: random function)
 
@@ -155,8 +152,45 @@ Add an index to a View:
 ```SQL
 CREATE UNIQUE CLUSTERED INDEX IX_SomeView
 ON SomeSchema.SomeView 
-s(SomeID, SomeColumn, SomeColumn);
+(SomeID, SomeColumn, SomeColumn);
 ```
+
+## Ch. 2 Create User-Defined Functions
+
+`GETDATE()` returns a fully qualified timestamp of now
+
+```SQL
+SELECT GETDATE() AS 'Now';
+-- 2024-12-23 18:27:00.850
+```
+
+`RAND()` generates a random number between 0 and 1
+
+```SQL
+SELECT RAND() AS 'Random Number';
+-- 0.585513872220982
+```
+
+`FORMAT` allows you to apply string formatting to datetimes
+
+```SQL
+SELECT 
+    FORMAT(GETDATE(), 'd');
+-- 12/23/2024
+```
+
+[MS Docs: What are the SQL database functions?](https://learn.microsoft.com/en-us/sql/t-sql/functions/functions?view=sql-server-ver16)
+
+* Deterministic
+    * `AVG`
+    * `MIN`
+    * `MAX`
+* Non-deterministic
+    * `GETDATE`
+    * `RAND`
+    * `FORMAT` (culturally dependent)
+
+> You can't index a View if it contains non-deterministic functions.
 
 ---
 End of document
