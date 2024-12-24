@@ -10,10 +10,10 @@ GO
 
 -- Write a query that retrieves the required information
 -- This query will serve as the model for the function
-        -- Turn the query into a table-valued function
-        -- CREATE OR ALTER FUNCTION Sales.LastOrder (@CustomerID AS INT)
-        -- RETURNS TABLE
-        -- AS RETURN
+-- Turn the query into a table-valued function
+CREATE OR ALTER FUNCTION Sales.LastOrder (@CustomerID AS INT)
+RETURNS TABLE
+AS RETURN
 SELECT
     Orders.OrderID AS [Order Number],
     Orders.CustomerID AS [Customer Number],

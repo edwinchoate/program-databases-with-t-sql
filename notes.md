@@ -266,5 +266,16 @@ SET @Output =
     END;
 ```
 
+Table-valued functions act like Views that can accept parameters:
+
+```SQL
+CREATE FUNCTION Application.FindCustomerById (@CustomerID INT)
+RETURNS TABLE 
+AS
+    RETURN SELECT *
+    FROM Customers
+    WHERE CustomerID = @CustomerID;
+```
+
 ---
 End of document
