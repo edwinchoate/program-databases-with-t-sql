@@ -175,7 +175,7 @@ SELECT RAND() AS 'Random Number';
 
 ```SQL
 SELECT 
-    FORMAT(GETDATE(), 'd');
+    FORMAT(GETDATE(), 'd'); -- 'd' returns a region-specific string
 -- 12/23/2024
 ```
 
@@ -191,6 +191,49 @@ SELECT
     * `FORMAT` (culturally dependent)
 
 > You can't index a View if it contains non-deterministic functions.
+
+_Scalar-valued functions_ - return a single value
+
+_Table-valued functions_ - return rows & columns 
+
+A simple scalar function:
+
+```SQL
+CREATE FUNCTION SomeSchema.Square (@Input INT)
+RETURNS INT
+AS
+BEGIN
+    DECLARE @Output INT;
+    SET @Output = @Input * @Input;
+    RETURN @Output;
+END;
+```
+
+In SSMS, you can find the functions under:
+
+* MyDatabaseName
+    * Programmability
+        * Functions
+            * Scalar-valued Functions
+            * Table-valued Functions
+
+Calling a function: 
+
+```SQL
+SELECT Application.SquareNumber(5) AS 'Result';
+```
+
+There are also `PRINT` statements in T-SQL:
+
+```SQL
+PRINT Application.SquareNumber(5);
+```
+
+Remove a function from the database:
+
+```SQL
+DROP FUNCTION Application.SquareNumber;
+```
 
 ---
 End of document
