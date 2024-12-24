@@ -235,5 +235,36 @@ Remove a function from the database:
 DROP FUNCTION Application.SquareNumber;
 ```
 
+There's a handy way to not have to know whether the function exists already or not: 
+
+```SQL 
+CREATE OR ALTER FUNCTION SomeSchema.SomeFunction (@SomeParam INT)
+RETURNS INT
+BEGIN
+    ...
+END;
+```
+
+If/else syntax:
+
+```SQL
+BEGIN IF @Input % 2 = 0
+    ...
+ELSE
+    ...
+END;
+```
+
+A `CASE` statement is like a switch statement: 
+
+```SQL
+SET @Output = 
+    CASE
+        WHEN @Day = 'Saturday' THEN 'Yes'
+        WHEN @Day = 'Sunday' THEN 'Yes'
+        ELSE 'No'
+    END;
+```
+
 ---
 End of document
