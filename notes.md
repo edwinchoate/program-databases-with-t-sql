@@ -355,5 +355,43 @@ You can also used named parameters like this:
 EXEC Warehouse.uspInsertColor @Color = 'Orange';
 ```
 
+## Output Parameters
+
+SQL Server has output parameters similar to C#'s `out` params. You use the `OUTPUT` keyword to declare an output param in the definition of the stored procedure and then you use the `OUTPUT` keyword again when you access its value. 
+
+Example of defining an output parameter: 
+
+```SQL
+CREATE PROC MySchema.uspMyProc (@SomeOutputParam INT OUTPUT)
+AS
+-- SQL goes here
+-- SET a value @SomeOutputParam
+;
+GO
+```
+
+Then, you access the value from the output param like this:
+
+```SQL
+EXEC MySchema.uspMyProc @SomeOutputParam = @SomeLocalVar OUTPUT;
+-- This will copy the value from @SomeOutputParam over to @SomeLocalVar
+```
+
+Example:
+
+```SQL
+CREATE OR ALTER PROCEDURE Application.uspSimpleProcedure (@OutputMessage AS nvarchar(200) OUTPUT)
+AS
+SET @OutputMessage = N'This message was returned by the stored procedure on ' + FORMAT(GETDATE(), 'd')
+;
+GO
+
+DECLARE @MyLocalMessage nvarchar(200);
+EXEC Application.uspSimpleProcedure
+    @OutputMessage = @MyLocalMessage OUTPUT;
+PRINT @MyLocalMessage;
+GO
+```
+
 ---
 End of document
