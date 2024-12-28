@@ -277,5 +277,83 @@ AS
     WHERE CustomerID = @CustomerID;
 ```
 
+## Ch. 3 Work with Stored Procedures
+
+Stored Procedures are different from Views and Functions in that:
+
+1. They can perform a sequence of multiple operations 
+2. They can modify the data in the DB (as opposed to just querying it)
+
+**Naming Conventions**
+
+* Common prefixes 
+    * _Stored procedures_: `usp`, `usp_` (which stands for user stored procedure. `sp_` is used by the system/SQL Server. Ex: `sp_databases`.)
+    * _Functions_: `ufn` (user function), `fn_`
+    * _Views_: `v`, `vw_`
+
+Create a stored procedure:
+
+```SQL
+CREATE OR ALTER PROCEDURE Application.uspViewEmployees
+AS
+-- SQL query goes here
+```
+
+Execute a stored procedure:
+
+```SQL
+EXEC Application.uspViewEmployees;
+```
+
+You can also use the full `EXECUTE` keyword.
+
+Example of a stored procedure executing multiple commands in a way that Views cannot:
+
+```SQL
+CREATE OR ALTER PROCEDURE Application.uspViewData
+AS 
+SELECT TOP(1) * FROM Application.People;
+SELECT TOP(1) * FROM Sales.Customers;
+SELECT TOP(1) * FROM Warehouse.Colors;
+GO
+```
+
+Writing a stored procedure that takes in a parameter:
+
+```SQL
+CREATE OR ALTER MySchema.uspMyStoredProcedure (@SomeParam INT)
+AS
+-- SQL goes here
+;
+```
+
+Example:
+
+```SQL
+CREATE OR ALTER PROCEDURE Warehouse.uspInsertColor (@Color AS nvarchar(100))
+AS
+    DECLARE @ColorID INT
+    SET @ColorID = (SELECT MAX(ColorID) FROM Warehouse.Colors)+1;
+    INSERT INTO Warehouse.Colors (ColorID, ColorName, LastEditedBy)
+        VALUES (@ColorID, @Color, 1);
+    SELECT * FROM Warehouse.Colors
+        WHERE ColorID = @ColorID
+        ORDER BY ColorID DESC;
+;
+GO
+```
+
+You pass parameters when calling the sp like this:
+
+```SQL
+EXEC Warehouse.uspInsertColor 'Orange';
+```
+
+You can also used named parameters like this:
+
+```SQL
+EXEC Warehouse.uspInsertColor @Color = 'Orange';
+```
+
 ---
 End of document
