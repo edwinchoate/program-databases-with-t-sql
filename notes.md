@@ -431,5 +431,63 @@ AS
 ;
 ```
 
+## Ch. 4 Create Transactions
+
+_Transaction_ - a wrapper around a series of commands to ensure data integrity. If something goes wrong during the process, all of the actions are automatically unwinded.
+
+* Ex: Transferring money from one bank account to another. You want to make sure the debit from one account and the credit to the other account both go thru.
+
+_Commit_ - when a transaction goes thru successfully
+
+_Rollback_ - when a transaction doesn't go thru successfully and everything is reset. Like a cancellation.
+
+Simple transaction syntax:
+
+```SQL
+BEGIN TRANSACTION;
+    -- SQL goes here
+COMMIT TRANSACTION;
+```
+
+Syntax for a rollback:
+
+```SQL
+ROLLBACK TRANSACTION;
+```
+
+Named transactions:
+
+```SQL
+BEGIN TRANSACTION MyTransaction WITH MARK;
+    ...
+COMMIT TRANSACTION MyTransaction;
+```
+
+* `WITH MARK` is optional - it logs more info in the db log which can be useful when restoring the database
+
+_You can have nested transactions._ If a rollback occurs anywhere in the nested transactions, all of the parent transactions are rolled back as well.
+
+`@@TRANCOUNT` - a system variable that tells you how many transactions are currently running. 0 means you're not in a transaction, 1 means you're in a non-nested transaction, 2 means you're in level two of a nested transaction, and so on. 
+
+Access transaction count: 
+
+```SQL
+SELECT @@TRANCOUNT;
+```
+
+_Savepoint_ - you can save a snapshot part-way through a transaction which allows you to only rollback part of a transaction. 
+
+Define a savepoint: 
+
+```SQL
+SAVE TRANSACTION MySavePoint;
+```
+
+Rollback to a savepoint:
+
+```SQL
+ROLLBACK TRANSACTION MySavePoint;
+```
+
 ---
 End of document
