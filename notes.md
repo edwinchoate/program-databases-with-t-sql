@@ -393,5 +393,43 @@ PRINT @MyLocalMessage;
 GO
 ```
 
+T-SQL for an ID column:
+
+```SQL
+CREATE TABLE MySchema.MyTable (
+    SomeID INT IDENTITY PRIMARY KEY,
+    ...
+);
+```
+
+_Trigger_ - A stored procedure that's automatically run when specified conditions are met. Triggers are attached to specific objects.
+
+Example of a trigger that occurs whenever data is inserted into a specified table: 
+
+```SQL
+CREATE TRIGGER MySchema.MyTrigger
+ON Application.Customers 
+AFTER INSERT
+AS
+    -- SQL goes here
+;
+```
+
+Example: An audit table that logs whenever data is added to a Colors table: 
+
+```SQL
+CREATE TRIGGER Warehouse.ColorChangeLog 
+ON Warehouse.Colors
+AFTER INSERT
+AS
+    INSERT INTO Warehouse.ColorAudit (ColorName, TimeAdded)
+    VALUES
+    (
+        SELECT Inserted.ColorName FROM Inserted,
+        GETDATE()
+    );
+;
+```
+
 ---
 End of document
