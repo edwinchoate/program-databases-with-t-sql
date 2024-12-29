@@ -467,7 +467,7 @@ COMMIT TRANSACTION MyTransaction;
 
 _You can have nested transactions._ If a rollback occurs anywhere in the nested transactions, all of the parent transactions are rolled back as well.
 
-`@@TRANCOUNT` - a system variable that tells you how many transactions are currently running. 0 means you're not in a transaction, 1 means you're in a non-nested transaction, 2 means you're in level two of a nested transaction, and so on. 
+`@@TRANCOUNT` - a global variable that tells you how many transactions are currently running. 0 means you're not in a transaction, 1 means you're in a non-nested transaction, 2 means you're in level two of a nested transaction, and so on. 
 
 Access transaction count: 
 
@@ -487,6 +487,27 @@ Rollback to a savepoint:
 
 ```SQL
 ROLLBACK TRANSACTION MySavePoint;
+```
+
+There's a global variable called `@@OPTIONS` that allows you to change SQL Server's default behaviors. 
+
+By default, transactions are completed/committed even when there's a runtime error. To change this, you set the option `XACT_ABORT` to `ON`. `XACT_ABORT` makes transactions automatically rollback when there's a runtime error during the current session.
+
+Turn on the option for the current session:
+
+```SQL
+SET XACT_ABORT ON;
+```
+
+Check the current value of `XACT_ABORT`:
+
+```SQL
+SELECT 
+CASE
+    WHEN (16384 & @@OPTIONS) THEN 'ON'
+    ELSE 'OFF'
+END
+AS 'XACT_ABORT';
 ```
 
 ---
