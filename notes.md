@@ -199,7 +199,7 @@ _Table-valued functions_ - return rows & columns
 A simple scalar function:
 
 ```SQL
-CREATE FUNCTION SomeSchema.Square (@Input INT)
+CREATE FUNCTION SomeSchema.SquareNumber (@Input INT)
 RETURNS INT
 AS
 BEGIN
@@ -220,29 +220,26 @@ In SSMS, you can find the functions under:
 Calling a function: 
 
 ```SQL
-SELECT Application.SquareNumber(5) AS 'Result';
+SELECT SomeSchema.SquareNumber(5) AS 'Result';
 ```
 
 There are also `PRINT` statements in T-SQL:
 
 ```SQL
-PRINT Application.SquareNumber(5);
+PRINT SomeSchema.SquareNumber(5);
 ```
 
 Remove a function from the database:
 
 ```SQL
-DROP FUNCTION Application.SquareNumber;
+DROP FUNCTION SomeSchema.SquareNumber;
 ```
 
 There's a handy way to not have to know whether the function exists already or not: 
 
 ```SQL 
 CREATE OR ALTER FUNCTION SomeSchema.SomeFunction (@SomeParam INT)
-RETURNS INT
-BEGIN
-    ...
-END;
+...
 ```
 
 If/else syntax:
