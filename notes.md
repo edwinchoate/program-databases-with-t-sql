@@ -507,5 +507,74 @@ END
 AS 'XACT_ABORT';
 ```
 
+## Ch. 5 Implement Error Handling
+
+SQL Server Try/Catch block syntax: 
+
+```SQL
+BEGIN TRY
+	...
+END TRY
+BEGIN CATCH
+	...
+END CATCH;
+```
+
+Built-in functions for error info: 
+
+* `ERROR_NUMBER()`
+* `ERROR_MESSAGE()`
+* `ERROR_SEVERITY()`
+* `ERROR_STATE()`
+* `ERROR_LINE()`
+* `ERROR_PROCEDURE()`
+* `XACT_STATE()` - Transaction State
+
+Simple example of printing scenario-specific messages: 
+
+```SQL
+BEGIN TRY 
+	...
+END TRY
+BEGIN CATCH 
+	BEGIN IF ERROR_NUMBER() = 515
+		PRINT 'Missing required column'	
+	ELSE IF ERROR_NUMBER() = 8134
+		PRINT 'You cannot divide by zero'
+	ELSE ...
+	END;
+END CATCH;
+```
+
+Throwing custom exceptions in SQL Server
+
+Throw syntax:
+
+```SQL
+THROW 50001, 'A problem occurred', 1;
+```
+
+* First parameter is the `ERROR_NUMBER`, and it must be > 50,000
+* Second parameter is the `ERROR_MESSAGE`
+* Third parameter is `ERROR_STATE`. This is usually `1` but you can use this number to ascribe different conditions to the error.
+
+Re-throwing an error: 
+
+```SQL
+BEGIN TRY
+	...
+END TRY
+BEGIN CATCH
+	PRINT 'Something bad happened';
+	THROW; -- This re-throws the exception so that it isn't eaten by this catch block
+END CATCH;
+```
+
+Inserting variable values into strings in SQL Server: 
+
+```SQL
+PRINT 'Error ' + CONVERT(varchar(50), ERROR_NUMBER() + ': ' + ERROR_MESSAGE());
+```
+
 ---
 End of document
