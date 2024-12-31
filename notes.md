@@ -639,5 +639,14 @@ FROM Customers;
 
 * Filling in `NULL` values on-the-fly is impactful when performing `JOIN`s.
 
+`COALESCE` returns the first non-null value in a sequence:
+
+```SQL
+SELECT COALESCE(NULL, NULL, 1, 2);    --> 1
+SELECT COALESCE(1, 2, 3, 4);          --> 1
+SELECT COALESCE(NULL, NULL, NULL, 1); --> 1
+SELECT COALESCE(NULL, NULL, NULL);    --> Throws an error
+```
+
 ---
 End of document
