@@ -17,19 +17,32 @@ GO
 
 CREATE OR ALTER PROCEDURE dbo.TransferFunds (@FromAccount AS INT, @ToAccount AS INT, @Amount AS decimal(10,2))
 AS
-SET XACT_ABORT ON;
-BEGIN TRANSACTION;
+	BEGIN TRY
+		BEGIN TRANSACTION;
 
-UPDATE dbo.BankAccounts
-	SET Balance -= @Amount
-	WHERE AccountID = @FromAccount;
+		IF NOT EXISTS (SELECT AccountID FROM dbo.BankAccounts WHERE AccountID = @FromAccount)
+			THROW 50001, 'From Account doesn''t exist!', 1;
 
-UPDATE dbo.BankAccounts
-	SET Balance += @Amount
-	WHERE AccountID = @ToAccount;
+		IF NOT EXISTS (SELECT AccountID FROM dbo.BankAccounts WHERE AccountID = @ToAccount)
+			THROW 50002, 'To Account doesn''t exist!', 1;
 
-COMMIT TRANSACTION;
-SET XACT_ABORT OFF;
+		IF (SELECT Balance FROM dbo.BankAccounts WHERE AccountID = @FromAccount) < @Amount
+			THROW 50003, 'Not enough funds!', 1;
+
+		UPDATE dbo.BankAccounts
+			SET Balance -= @Amount
+			WHERE AccountID = @FromAccount;
+
+		UPDATE dbo.BankAccounts
+			SET Balance += @Amount
+			WHERE AccountID = @ToAccount;
+
+		COMMIT TRANSACTION;
+	END TRY
+	BEGIN CATCH
+		ROLLBACK TRANSACTION;
+		PRINT 'The transaction was rolled back. ' + ERROR_MESSAGE();
+	END CATCH;
 ;
 GO
 
