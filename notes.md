@@ -590,5 +590,54 @@ BEGIN CATCH
 END CATCH;
 ```
 
+## Ch. 6 Data Type Conversions and NULLs
+
+SQL Server has the ability to make smart inferences to convert between data types. 
+
+For example, number chars are silently converted to integers:
+
+```SQL
+DECLARE @Number1 INT;
+SET @Number1 = 1;
+
+DECLARE @Number2 CHAR(1);
+SET @Number2 = '2';
+
+SELECT @Number1 + @Number2; --> 3
+```
+
+You explicitly convert types in SQL Server by using the `CONVERT` function, which converts the variables in the expression to the type specified in the first param:
+
+```SQL
+SELECT CONVERT(CHAR(1), @Number1 + @Number2); --> '12'
+```
+
+There's also a `CAST` function: 
+
+```SQL
+SELECT CAST(@Number1 AS CHAR(1) + @Number2); --> '12'
+```
+
+[Microsoft Learn: Data type conversion (Database Engine)](https://learn.microsoft.com/en-us/sql/t-sql/data-types/data-type-conversion-database-engine?view=sql-server-ver16)
+
+![data type conversion chart](https://learn.microsoft.com/en-us/sql/t-sql/data-types/media/data-type-conversion-database-engine/data-type-conversion-chart.png?view=sql-server-ver16)
+
+`ISNULL` Function
+
+```SQL
+-- ISNULL([expression], [value if null])
+SELECT ISNULL(1, 100);   --> 1
+SELECT ISNULL(NULL, 100) --> 100
+```
+
+`ISNULL` is useful for providing on-the-fly default values in a query:
+
+```SQL
+SELECT CustomerID, CustomerFullName, ISNULL(CustomerBadgeColor, 'Green')
+FROM Customers;
+```
+
+* Filling in `NULL` values on-the-fly is impactful when performing `JOIN`s.
+
 ---
 End of document
