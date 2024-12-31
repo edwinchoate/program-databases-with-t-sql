@@ -576,5 +576,19 @@ Inserting variable values into strings in SQL Server:
 PRINT 'Error ' + CONVERT(varchar(50), ERROR_NUMBER() + ': ' + ERROR_MESSAGE());
 ```
 
+Example of using try/catch with transaction commit/rollback: 
+
+```SQL
+BEGIN TRY
+    BEGIN TRANSACTION;
+        ...
+    COMMIT TRANSACTION;
+END TRY
+BEGIN CATCH
+    PRINT ERROR_MESSAGE();
+    ROLLBACK TRANSACTION;
+END CATCH;
+```
+
 ---
 End of document
